@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#7B0828">
+<title>Meu espaço · EnglishHub with Marcela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+<style>
+/* Layout: uma coluna estreita e calma; a próxima aula é o único bloco "forte" (azul), o resto são recursos menores sobre o creme */
+:root{
+  --blue:#084884; --blue-ink:#FBF5F3; --blue-soft:#E4ECF5;
+  --marsala:#7B0828; --rose:#F4E4E8;
+  --coral:#E34D1B; --coral-2:#C73F12; --coral-soft:#FCE6DC; --time:#FFC7B0;
+  --bg:#FBF5F3; --card:#FFFFFF; --card-2:#F6ECE8;
+  --ink:#241A22; --ink-2:#4D424A; --muted:#8A7D84; --line:#EDE1DC;
+  --on-blue-2:rgba(251,245,243,.72); --on-blue-3:rgba(251,245,243,.45); --on-blue-line:rgba(251,245,243,.18);
+  --font:'Poppins',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --r:24px; --r-sm:14px;
+  --shadow:0 1px 2px rgba(36,26,34,.04),0 8px 28px rgba(36,26,34,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --blue:#0B4F92; --blue-soft:#1B2A3C;
+  --marsala:#E7A3B5; --rose:#3A1F28;
+  --coral:#EF6A3C; --coral-2:#F2804F; --coral-soft:#3C231A;
+  --bg:#1A1317; --card:#251B20; --card-2:#2D2127;
+  --ink:#F6ECE9; --ink-2:#D6C8CC; --muted:#A5959C; --line:#3A2C33;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --blue:#0B4F92; --blue-soft:#1B2A3C;
+  --marsala:#E7A3B5; --rose:#3A1F28;
+  --coral:#EF6A3C; --coral-2:#F2804F; --coral-soft:#3C231A;
+  --bg:#1A1317; --card:#251B20; --card-2:#2D2127;
+  --ink:#F6ECE9; --ink-2:#D6C8CC; --muted:#A5959C; --line:#3A2C33;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  color-scheme:dark}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--coral);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+
+.wrap{max-width:860px;margin:0 auto;padding-inline:20px;padding-block:28px 72px;display:flex;flex-direction:column;gap:22px}
+
+.brand{display:flex;flex-direction:column;line-height:1.1;color:var(--marsala);text-decoration:none;align-self:flex-start}
+.brand b{font-weight:700;font-size:13px;letter-spacing:.3em}
+.brand span{font-weight:400;font-size:10.5px;letter-spacing:.34em;opacity:.8;margin-top:3px}
+
+.hello{display:flex;flex-direction:column;gap:4px;margin-top:18px}
+.hello h1{margin:0;font-size:clamp(30px,6.4vw,42px);font-weight:600;letter-spacing:-.02em;line-height:1.12;text-wrap:balance}
+.hello .space{margin:0;font-size:clamp(17px,3.6vw,20px);font-weight:500;color:var(--marsala)}
+.hello .tag{margin:2px 0 0;color:var(--muted);font-size:14.5px}
+
+.next{background:var(--blue);color:var(--blue-ink);border-radius:28px;padding:26px 24px 24px;display:grid;gap:22px;position:relative;overflow:hidden}
+.next::after{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;border:1.5px solid var(--on-blue-line);pointer-events:none}
+.next-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.eyebrow{font-size:11.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--on-blue-2)}
+.badge{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--coral);color:#fff;border-radius:20px;padding:5px 12px;white-space:nowrap}
+.badge.live{animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(227,77,27,.25)}}
+.when{display:flex;flex-direction:column;gap:2px}
+.when .wd{font-size:15px;font-weight:500;color:var(--on-blue-2)}
+.when .dt{font-size:clamp(28px,6.6vw,40px);font-weight:600;letter-spacing:-.02em;line-height:1.1}
+.when .dt .tm{color:var(--time);font-weight:600}
+.lesson{display:flex;flex-direction:column;gap:14px;padding-top:18px;border-top:1px solid var(--on-blue-line)}
+.lesson .k{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--on-blue-3)}
+.lesson .t{font-size:clamp(19px,4.2vw,23px);font-weight:600;line-height:1.3;text-wrap:balance;overflow-wrap:anywhere}
+.btn-join{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--coral);color:#fff;text-decoration:none;border-radius:40px;padding:17px 26px;font-weight:600;font-size:14.5px;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 10px 24px rgba(0,0,0,.18);transition:background .15s,transform .15s}
+.btn-join:hover{background:var(--coral-2);transform:translateY(-1px)}
+.next.today{box-shadow:0 0 0 4px var(--coral-soft)}
+.next-empty{display:flex;flex-direction:column;gap:6px}
+.next-empty .t{font-size:clamp(20px,4.6vw,24px);font-weight:600;line-height:1.3;text-wrap:balance}
+.next-empty p{margin:0;color:var(--on-blue-2);max-width:48ch}
+
+.res{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:var(--card);border-radius:var(--r);padding:22px 22px 20px;display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);min-width:0;transition:transform .15s,box-shadow .15s}
+a.card:hover,button.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(36,26,34,.09)}
+button.card{border:0;text-align:left;font:inherit;width:100%;color:var(--ink)}
+.card h2{margin:0;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--marsala)}
+.card p{margin:0;color:var(--ink-2);font-size:14px}
+.card .go{margin-top:auto;padding-top:10px;font-weight:600;font-size:13.5px;color:var(--blue);display:inline-flex;gap:8px;align-items:center}
+.card.muted{box-shadow:none;background:transparent;border:1.5px dashed var(--line)}
+.card.muted .go{color:var(--muted);font-weight:500}
+.daily{grid-column:1/-1;background:var(--card-2);box-shadow:none;flex-direction:row;align-items:center;gap:20px;flex-wrap:wrap}
+.daily .txt{flex:1 1 260px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.daily .pill{background:var(--marsala);color:var(--bg);border-radius:40px;padding:12px 22px;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.daily.muted .pill{background:transparent;color:var(--muted);border:1.5px solid var(--line);letter-spacing:.02em;text-transform:none}
+.room{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;padding:18px 4px 0;border-top:1px solid var(--line)}
+.room .txt{display:flex;flex-direction:column;min-width:0}
+.room b{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--marsala)}
+.room span{color:var(--muted);font-size:13.5px}
+.room a{color:var(--blue);font-weight:600;font-size:14px;text-decoration:none;border:1.5px solid var(--blue);border-radius:40px;padding:10px 20px;white-space:nowrap}
+.room a:hover{background:var(--blue);color:#fff}
+.foot{color:var(--muted);font-size:12.5px;text-align:center;margin-top:10px}
+
+.back{align-self:flex-start;background:none;border:0;padding:6px 0;color:var(--blue);font-weight:600;font-size:14px}
+.cal-head{display:flex;flex-direction:column;gap:4px}
+.cal-head h1{margin:0;font-size:clamp(26px,5.4vw,34px);font-weight:600;letter-spacing:-.02em}
+.cal-head p{margin:0;color:var(--muted)}
+.stats{display:flex;gap:10px 28px;flex-wrap:wrap;background:var(--card);border-radius:var(--r);padding:18px 22px;box-shadow:var(--shadow)}
+.stat{display:flex;flex-direction:column}
+.stat .k{font-size:10.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat.hl .v{color:var(--coral-2)}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;flex-basis:100%}
+.bar i{display:block;height:100%;background:var(--blue);border-radius:6px}
+.month{display:flex;flex-direction:column;gap:6px}
+.month h3{margin:6px 4px 4px;font-size:14px;font-weight:600;color:var(--marsala);letter-spacing:.02em}
+.row{display:grid;grid-template-columns:58px 1fr auto;gap:14px;align-items:center;background:var(--card);border-radius:var(--r-sm);padding:12px 16px;min-width:0}
+.row .d{display:flex;flex-direction:column;line-height:1.15;font-variant-numeric:tabular-nums}
+.row .d b{font-size:17px;font-weight:600}
+.row .d small{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.row .n{min-width:0;display:flex;flex-direction:column}
+.row .n b{font-weight:500;overflow-wrap:anywhere}
+.row .n small{color:var(--muted);font-size:12px}
+.row .s{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap}
+.row.past{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
+.row.past .n b{color:var(--ink-2)}
+.row.next-row{background:var(--blue);color:#fff}
+.row.next-row .d small,.row.next-row .n small{color:var(--on-blue-2)}
+.row.next-row .s{color:var(--time)}
+.row.feriado,.row.sem_aula{background:var(--rose);color:var(--marsala)}
+.row.recesso{background:var(--coral-soft);color:var(--coral-2)}
+.row.feriado .d small,.row.recesso .d small,.row.sem_aula .d small,.row.feriado .n small,.row.recesso .n small,.row.sem_aula .n small{color:inherit;opacity:.75}
+.cal-empty{background:var(--card);border-radius:var(--r);padding:36px 24px;text-align:center;color:var(--muted)}
+
+.state{min-height:60vh;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.state h1{margin:0;font-size:clamp(24px,5vw,30px);font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+.state p{margin:0;color:var(--ink-2);max-width:46ch}
+.skel{background:var(--card-2);border-radius:28px;height:220px;animation:sk 1.4s ease-in-out infinite}
+@keyframes sk{50%{opacity:.55}}
+
+@media (max-width:560px){
+  .res{grid-template-columns:1fr}
+  .next{padding:24px 20px 20px;border-radius:24px}
+  .daily .pill{width:100%;text-align:center}
+  .room a{width:100%;text-align:center}
+  .row{grid-template-columns:50px 1fr;gap:12px}
+  .row .s{grid-column:2}
+}
+@media (min-width:720px){
+  .next{grid-template-columns:1.35fr 1fr;padding:34px 36px;column-gap:40px}
+  .next-top{grid-column:1/-1}
+  .when .dt{font-size:34px}
+  .lesson{border-top:0;padding-top:0;padding-left:32px;border-left:1px solid var(--on-blue-line);justify-content:center;gap:16px}
+  .lesson .btn-join{align-self:flex-start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+</style>
+</head>
+<body>
+<main class="wrap" id="portal"></main>
+<script>
+/* =====================================================================
+   PortalView — desenha o portal do aluno a partir dos dados de get_portal:
+   { name, course, notebookUrl, dailyUrl, totalLessons,
+     lessons:[{n,date,time,duration,title,extra}],
+     events:[{kind:'feriado'|'recesso'|'sem_aula', start, end, label}] }
+   Usado igual no site (GitHub Pages) e na pré-visualização da professora.
+   ===================================================================== */
+const PortalView = (() => {
+  const WHEREBY = 'https://whereby.com/english-hub-marcela';
+  const MONTHS = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const MON_T = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const WD_FULL = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const WD_PL = ['domingos','segundas','terças','quartas','quintas','sextas','sábados'];
+  const WD3 = ['dom','seg','ter','qua','qui','sex','sáb'];
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pad = n => String(n).padStart(2, '0');
+  const parseKey = k => { const [y, m, d] = String(k).slice(0, 10).split('-').map(Number); return { y, m, d }; };
+  const keyOf = dt => `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+  const wdOf = k => { const p = parseKey(k); return new Date(p.y, p.m - 1, p.d).getDay(); };
+  const fmtTime = t => { if (!t) return ''; const [h, m] = String(t).split(':'); return `${+h}h${m && m !== '00' ? m : ''}`; };
+  const isHttps = u => /^https:\/\//.test(u || '');
+
+  function nextLesson(data, now) {
+    for (const l of data.lessons || []) {
+      if (!l.date) continue;
+      const p = parseKey(l.date);
+      const [hh, mm] = (l.time || '23:59').split(':').map(Number);
+      const start = new Date(p.y, p.m - 1, p.d, hh, mm || 0), end = new Date(start.getTime() + (l.duration || 60) * 60000);
+      if (end > now) {
+        const today = String(l.date).slice(0, 10) === keyOf(now);
+        const live = today && !!l.time && now >= new Date(start.getTime() - 10 * 60000) && now < end;
+        return { ...l, today, live };
+      }
+    }
+    return null;
+  }
+
+  function home(root, data, opt) {
+    const now = opt.now ? opt.now() : new Date();
+    const nx = nextLesson(data, now), total = data.totalLessons || (data.lessons || []).length;
+    const first = String(data.name || '').trim().split(/\s+/)[0] || '';
+    let next;
+    if (nx) {
+      const p = parseKey(nx.date);
+      next = `<section class="next${nx.today ? ' today' : ''}" aria-label="Próxima aula">
+        <div class="next-top"><span class="eyebrow">Próxima aula</span>${nx.live ? '<span class="badge live">Acontecendo agora</span>' : nx.today ? '<span class="badge">Hoje</span>' : ''}</div>
+        <div class="when"><span class="wd">${nx.today ? 'Hoje, ' + WD_FULL[wdOf(nx.date)].toLowerCase() : WD_FULL[wdOf(nx.date)]}</span>
+          <span class="dt num">${pad(p.d)} de ${MONTHS[p.m - 1]}${nx.time ? ` · <span class="tm">${fmtTime(nx.time)}</span>` : ''}</span></div>
+        <div class="lesson"><div><span class="k">Lesson ${nx.n}${total ? ' de ' + total : ''}</span><div class="t">📚 ${esc(nx.title || 'Aula')}</div></div>
+          <a class="btn-join" href="${WHEREBY}" target="_blank" rel="noopener noreferrer">Entrar na aula <span aria-hidden="true">↗</span></a></div>
+      </section>`;
+    } else {
+      const had = (data.lessons || []).length > 0;
+      next = `<section class="next" aria-label="Próxima aula">
+        <div class="next-top"><span class="eyebrow">Próxima aula</span></div>
+        <div class="next-empty"><div class="t">${had ? 'Não há próximas aulas no seu calendário.' : 'Seu calendário está sendo preparado.'}</div>
+          <p>${had ? 'Quando novas aulas forem marcadas, elas aparecem aqui automaticamente.' : 'Assim que as datas forem definidas, sua próxima aula aparece aqui.'}</p></div>
+      </section>`;
+    }
+    const nb = isHttps(data.notebookUrl)
+      ? `<a class="card" href="${esc(data.notebookUrl)}" target="_blank" rel="noopener noreferrer"><h2>📓 Meu Student Notebook</h2><p>Seu espaço de estudo, anotações e materiais.</p><span class="go">Abrir Student Notebook →</span></a>`
+      : `<div class="card muted"><h2>📓 Meu Student Notebook</h2><p>Seu espaço de estudo, anotações e materiais.</p><span class="go">Disponível em breve</span></div>`;
+    const daily = isHttps(data.dailyUrl)
+      ? `<a class="card daily" href="${esc(data.dailyUrl)}" target="_blank" rel="noopener noreferrer"><div class="txt"><h2>📱 EnglishHub Daily</h2><p>Pratique inglês entre uma aula e outra.</p></div><span class="pill">Abrir EnglishHub Daily →</span></a>`
+      : `<div class="card daily muted"><div class="txt"><h2>📱 EnglishHub Daily</h2><p>Pratique inglês entre uma aula e outra.</p></div><span class="pill">Disponível em breve</span></div>`;
+    root.innerHTML = `
+      <div class="brand" aria-label="EnglishHub with Marcela"><b>ENGLISHHUB</b><span>WITH MARCELA</span></div>
+      <header class="hello">
+        <h1>Olá${first ? ', ' + esc(first) : ''}! 👋</h1>
+        <p class="space">Seu espaço de aprendizagem</p>
+        <p class="tag">Todos os seus recursos de inglês em um só lugar.</p>
+      </header>
+      ${next}
+      <div class="res">
+        <button class="card" type="button" data-go="cal"><h2>📅 Meu calendário</h2><p>Acompanhe suas aulas, feriados, recessos e o percurso do curso.</p><span class="go">Ver meu calendário →</span></button>
+        ${nb}
+        ${daily}
+      </div>
+      <div class="room"><div class="txt"><b>🎥 Sala de aula</b><span>Entre aqui no horário da sua aula.</span></div><a href="${WHEREBY}" target="_blank" rel="noopener noreferrer">Entrar na sala →</a></div>
+      <p class="foot">EnglishHub with Marcela · Salve este link para voltar sempre que quiser.</p>`;
+    root.querySelector('[data-go=cal]').onclick = () => { calendar(root, data, opt); if (opt.onNav) opt.onNav('cal'); };
+  }
+
+  function calendar(root, data, opt) {
+    const now = opt.now ? opt.now() : new Date();
+    const lessons = data.lessons || [], events = data.events || [];
+    const back = () => { home(root, data, opt); if (opt.onNav) opt.onNav('home'); };
+    if (!lessons.length) {
+      root.innerHTML = `<button class="back" type="button" data-back>← Voltar</button>
+        <div class="cal-head"><h1>Meu calendário</h1><p>${esc(data.course || '')}</p></div>
+        <div class="cal-empty">Seu calendário está sendo preparado. Assim que as datas forem definidas, elas aparecem aqui.</div>`;
+      root.querySelector('[data-back]').onclick = back; window.scrollTo(0, 0); return;
+    }
+    const nx = nextLesson(data, now), today = keyOf(now);
+    const total = data.totalLessons || lessons.length;
+    const done = lessons.filter(l => nx ? String(l.date) < String(nx.date) || (l.date === nx.date && l.n < nx.n) : true).length;
+    const last = lessons[lessons.length - 1];
+    const items = [
+      ...lessons.map(l => ({ date: String(l.date), kind: 'l', l })),
+      ...events.map(e => ({ date: String(e.start), kind: e.kind, e }))
+    ].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+    let html = '', curM = '';
+    items.forEach(it => {
+      const p = parseKey(it.date), mk = `${p.y}-${p.m}`;
+      if (mk !== curM) { if (curM) html += '</section>'; curM = mk; html += `<section class="month"><h3>${MON_T[p.m - 1]} ${p.y}</h3>`; }
+      const d = `<div class="d"><b>${pad(p.d)}</b><small>${WD3[wdOf(it.date)]}</small></div>`;
+      if (it.kind === 'l') {
+        const l = it.l, isNext = nx && nx.n === l.n && nx.date === l.date, past = !isNext && (nx ? it.date < String(nx.date) : true);
+        html += `<div class="row${isNext ? ' next-row' : past ? ' past' : ''}">${d}<div class="n"><b>${esc(l.title || 'Aula')}</b><small>Lesson ${l.n}${l.time ? ' · ' + fmtTime(l.time) : ''}</small></div><span class="s">${isNext ? (it.date === today ? 'HOJE' : 'PRÓXIMA') : past ? '✓ Anterior' : ''}</span></div>`;
+      } else {
+        const e = it.e, ep = parseKey(e.end || e.start), multi = e.end && e.end !== e.start;
+        const sub = e.kind === 'feriado' ? 'Feriado · sem aula' : e.kind === 'recesso' ? (multi ? `Recesso até ${pad(ep.d)}/${pad(ep.m)}` : 'Recesso') : 'Sem aula';
+        html += `<div class="row ${esc(e.kind)}">${d}<div class="n"><b>${esc(e.label || sub)}</b><small>${sub}</small></div><span class="s"></span></div>`;
+      }
+    });
+    if (curM) html += '</section>';
+    const lp = parseKey(last.date), ref = nx || lessons[0];
+    const rhythm = ref && ref.time ? ` · ${WD_PL[wdOf(ref.date)]} às ${fmtTime(ref.time)}` : '';
+    root.innerHTML = `<button class="back" type="button" data-back>← Voltar</button>
+      <div class="cal-head"><h1>Meu calendário</h1><p>${esc(data.course || '')}${rhythm}</p></div>
+      <div class="stats">
+        <div class="stat"><span class="k">Aulas anteriores</span><span class="v">${done} de ${total}</span></div>
+        <div class="stat"><span class="k">Próxima</span><span class="v">${nx ? (() => { const q = parseKey(nx.date); return `${pad(q.d)}/${pad(q.m)}`; })() : '—'}</span></div>
+        <div class="stat hl"><span class="k">Última aula prevista</span><span class="v">${pad(lp.d)}/${pad(lp.m)}/${lp.y}</span></div>
+        <div class="bar" aria-hidden="true"><i style="width:${Math.min(100, Math.round(done / (total || 1) * 100))}%"></i></div>
+      </div>
+      ${html}`;
+    root.querySelector('[data-back]').onclick = back;
+    window.scrollTo(0, 0);
+  }
+
+  function state(root, title, text, loading) {
+    root.innerHTML = `<div class="brand" aria-label="EnglishHub with Marcela"><b>ENGLISHHUB</b><span>WITH MARCELA</span></div>
+      ${loading ? '<div class="skel" aria-label="Carregando"></div>' : `<div class="state"><h1>${esc(title)}</h1><p>${esc(text)}</p></div>`}`;
+  }
+
+  return { home, calendar, state, nextLesson, WHEREBY, esc };
+})();
+
+</script>
+<script>
+/* Portal do Aluno — site público (GitHub Pages).
+   Este arquivo não contém dados de alunos. Os dados vêm do Supabase pela
+   função get_portal(token), que devolve apenas o portal daquele token.
+   A chave abaixo é a chave PÚBLICA do projeto (feita para ficar no site);
+   com as regras do banco, ela só consegue chamar get_portal. */
+(() => {
+  const SUPABASE_URL = 'https://ukcqpzqndyzuyhcnyfit.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable__aLlKZI1CRyaUajUCqkZMw_7orLSImz';
+  const root = document.getElementById('portal');
+
+  function readToken() {
+    const h = new URLSearchParams(location.hash.replace(/^#/, ''));
+    const q = new URLSearchParams(location.search);
+    const t = h.get('t') || q.get('t') || '';
+    return /^[A-Za-z0-9_-]{20,128}$/.test(t) ? t : '';
+  }
+
+  async function load() {
+    const token = readToken();
+    if (!token) { PortalView.state(root, 'Link incompleto', 'Abra o link completo que a Marcela enviou para você pelo WhatsApp.'); return; }
+    PortalView.state(root, '', '', true);
+    let data;
+    try {
+      const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/get_portal', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ p_token: token }),
+        cache: 'no-store'
+      });
+      if (!r.ok) throw new Error('http ' + r.status);
+      data = await r.json();
+    } catch (e) {
+      PortalView.state(root, 'Não foi possível carregar agora', 'Verifique sua internet e abra o link de novo em alguns instantes.');
+      return;
+    }
+    if (!data) { PortalView.state(root, 'Este link não está ativo', 'Fale com a Marcela para receber o seu link atualizado.'); return; }
+    const first = String(data.name || '').trim().split(/\s+/)[0];
+    if (first) document.title = `${first} · Meu espaço · EnglishHub`;
+    PortalView.home(root, data, {});
+  }
+  let loadedAt = Date.now();
+  load();
+  // Voltou ao portal depois de um tempo (ex.: deixou a aba aberta): atualiza a próxima aula.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && Date.now() - loadedAt > 10 * 60000) { loadedAt = Date.now(); load(); }
+  });
+})();
+</script>
+</body>
+</html>
