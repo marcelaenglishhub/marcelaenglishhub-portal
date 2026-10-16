@@ -121,6 +121,13 @@ button.card{border:0;text-align:left;font:inherit;width:100%;color:var(--ink)}
 .row .n{min-width:0;display:flex;flex-direction:column}
 .row .n b{font-weight:500;overflow-wrap:anywhere}
 .row .n small{color:var(--muted);font-size:12px}
+.lesson-more{margin-top:8px;border-top:1px solid var(--line);padding-top:8px;font-size:13px}
+.lesson-more summary{color:var(--blue);font-weight:600;cursor:pointer}
+.lesson-more-body{margin-top:9px;color:var(--ink-2);overflow-wrap:anywhere}
+.lesson-more-body a{color:var(--blue);font-weight:600}
+.lesson-resources{margin:10px 0 0;padding-left:18px}
+.lesson-resources li{margin:4px 0}
+.lesson-resources small{color:var(--muted)}
 .row .s{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap}
 .row.past{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
 .row.past .n b{color:var(--ink-2)}
@@ -163,7 +170,7 @@ button.card{border:0;text-align:left;font:inherit;width:100%;color:var(--ink)}
 /* =====================================================================
    PortalView — desenha o portal do aluno a partir dos dados de get_portal:
    { name, course, notebookUrl, dailyUrl, totalLessons,
-     lessons:[{n,date,time,duration,title,extra}],
+     lessons:[{n,date,time,duration,title,extra,content,resources}],
      events:[{kind:'feriado'|'recesso'|'sem_aula', start, end, label}] }
    Usado igual no site (GitHub Pages) e na pré-visualização da professora.
    ===================================================================== */
@@ -181,6 +188,23 @@ const PortalView = (() => {
   const wdOf = k => { const p = parseKey(k); return new Date(p.y, p.m - 1, p.d).getDay(); };
   const fmtTime = t => { if (!t) return ''; const [h, m] = String(t).split(':'); return `${+h}h${m && m !== '00' ? m : ''}`; };
   const isHttps = u => /^https:\/\//.test(u || '');
+
+  function lessonDetails(l) {
+    const content = String(l.content || '').trim(), resources = Array.isArray(l.resources) ? l.resources : [];
+    if (!content && !resources.length) return '';
+    let body = esc(content)
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/^#{1,6}\s+(.+)$/gm, '<strong>$1</strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|\n)-\s+/g, '$1• ')
+      .replace(/\n/g, '<br>');
+    const links = resources.filter(r => isHttps(r.url)).map(r => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">${esc(r.title || r.url)}</a></li>`).join('');
+    const files = resources.filter(r => r.fileName).map(r => r.storagePath
+      ? `<li><a href="#" data-storage-path="${esc(r.storagePath)}">📎 ${esc(r.title || r.fileName)}</a></li>`
+      : `<li>📎 ${esc(r.title || r.fileName)} <small>(${esc(r.fileName)})</small></li>`).join('');
+    return `<details class="lesson-more"><summary>Ver conteúdo e materiais</summary><div class="lesson-more-body">${body || '<p>Conteúdo não informado.</p>'}${links || files ? `<ul class="lesson-resources">${links}${files}</ul>` : ''}</div></details>`;
+  }
 
   function nextLesson(data, now) {
     for (const l of data.lessons || []) {
@@ -268,7 +292,7 @@ const PortalView = (() => {
       const d = `<div class="d"><b>${pad(p.d)}</b><small>${WD3[wdOf(it.date)]}</small></div>`;
       if (it.kind === 'l') {
         const l = it.l, isNext = nx && nx.n === l.n && nx.date === l.date, past = !isNext && (nx ? it.date < String(nx.date) : true);
-        html += `<div class="row${isNext ? ' next-row' : past ? ' past' : ''}">${d}<div class="n"><b>${esc(l.title || 'Aula')}</b><small>Lesson ${l.n}${l.time ? ' · ' + fmtTime(l.time) : ''}</small></div><span class="s">${isNext ? (it.date === today ? 'HOJE' : 'PRÓXIMA') : past ? '✓ Anterior' : ''}</span></div>`;
+        html += `<div class="row${isNext ? ' next-row' : past ? ' past' : ''}">${d}<div class="n"><b>${esc(l.title || 'Aula')}</b><small>Lesson ${l.n}${l.time ? ' · ' + fmtTime(l.time) : ''}</small>${lessonDetails(l)}</div><span class="s">${isNext ? (it.date === today ? 'HOJE' : 'PRÓXIMA') : past ? '✓ Anterior' : ''}</span></div>`;
       } else {
         const e = it.e, ep = parseKey(e.end || e.start), multi = e.end && e.end !== e.start;
         const sub = e.kind === 'feriado' ? 'Feriado · sem aula' : e.kind === 'recesso' ? (multi ? `Recesso até ${pad(ep.d)}/${pad(ep.m)}` : 'Recesso') : 'Sem aula';
@@ -339,8 +363,30 @@ const PortalView = (() => {
     if (!data) { PortalView.state(root, 'Este link não está ativo', 'Fale com a Marcela para receber o seu link atualizado.'); return; }
     const first = String(data.name || '').trim().split(/\s+/)[0];
     if (first) document.title = `${first} · Meu espaço · EnglishHub`;
-    PortalView.home(root, data, {});
+    PortalView.home(root, data, { token });
   }
+  root.addEventListener('click', async event => {
+    const link = event.target.closest('[data-storage-path]');
+    if (!link) return;
+    event.preventDefault();
+    const tab = window.open('', '_blank');
+    const oldText = link.textContent;
+    link.textContent = 'Preparando arquivo…';
+    try {
+      const response = await fetch(SUPABASE_URL + '/functions/v1/portal-resource-url', {
+        method: 'POST',
+        headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': 'Bearer ' + SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: readToken(), storagePath: link.dataset.storagePath }),
+        cache: 'no-store'
+      });
+      const result = await response.json();
+      if (!response.ok || !result.signedUrl) throw new Error('O material não está disponível agora.');
+      if (tab) tab.location = result.signedUrl; else location.href = result.signedUrl;
+    } catch (error) {
+      if (tab) tab.close();
+      link.textContent = oldText + ' · indisponível';
+    }
+  });
   let loadedAt = Date.now();
   load();
   // Voltou ao portal depois de um tempo (ex.: deixou a aba aberta): atualiza a próxima aula.
