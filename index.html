@@ -129,6 +129,14 @@ button.card{border:0;text-align:left;font:inherit;width:100%;color:var(--ink)}
 .lesson-resources li{margin:4px 0}
 .lesson-resources small{color:var(--muted)}
 .row .s{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap}
+.next .lesson-more{border-top-color:var(--on-blue-line);font-size:14px}
+.next .lesson-more summary{color:var(--time)}
+.next .lesson-more-body{color:var(--blue-ink)}
+.next .lesson-more-body a{color:var(--time)}
+.hw{grid-column:1/-1;border-left:5px solid var(--coral)}
+.hw .hw-body{color:var(--ink-2);font-size:14.5px;overflow-wrap:anywhere}
+.hw .hw-body a{color:var(--blue);font-weight:600}
+.hw small{color:var(--muted);font-size:12.5px}
 .row.past{background:transparent;box-shadow:inset 0 0 0 1px var(--line)}
 .row.past .n b{color:var(--ink-2)}
 .row.next-row{background:var(--blue);color:#fff}
@@ -189,6 +197,27 @@ const PortalView = (() => {
   const fmtTime = t => { if (!t) return ''; const [h, m] = String(t).split(':'); return `${+h}h${m && m !== '00' ? m : ''}`; };
   const isHttps = u => /^https:\/\//.test(u || '');
 
+  function md(text) {
+    return esc(String(text || '').trim())
+      .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/^#{1,6}\s+(.+)$/gm, '<strong>$1</strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(^|\n)-\s+/g, '$1• ')
+      .replace(/\n/g, '<br>');
+  }
+  // Seção "Homework" da página da aula (título com homework / lição de casa / tarefa de casa), até o próximo título.
+  function homeworkOf(content) {
+    const lines = String(content || '').split(/\r?\n/); let out = null, level = 0;
+    for (const line of lines) {
+      const h = line.match(/^(#{1,6})\s+(.*)$/);
+      if (h) { if (out !== null && h[1].length <= level) break; if (out === null && /homework|li[cç][aã]o de casa|tarefa de casa/i.test(h[2])) { out = []; level = h[1].length; continue; } }
+      if (out !== null) out.push(line);
+    }
+    const text = (out || []).join('\n').trim();
+    return /[A-Za-zÀ-ÿ0-9]/.test(text) ? text : '';
+  }
+
   function lessonDetails(l) {
     const content = String(l.content || '').trim(), resources = Array.isArray(l.resources) ? l.resources : [];
     if (!content && !resources.length) return '';
@@ -232,7 +261,7 @@ const PortalView = (() => {
         <div class="next-top"><span class="eyebrow">Próxima aula</span>${nx.live ? '<span class="badge live">Acontecendo agora</span>' : nx.today ? '<span class="badge">Hoje</span>' : ''}</div>
         <div class="when"><span class="wd">${nx.today ? 'Hoje, ' + WD_FULL[wdOf(nx.date)].toLowerCase() : WD_FULL[wdOf(nx.date)]}</span>
           <span class="dt num">${pad(p.d)} de ${MONTHS[p.m - 1]}${nx.time ? ` · <span class="tm">${fmtTime(nx.time)}</span>` : ''}</span></div>
-        <div class="lesson"><div><span class="k">Lesson ${nx.n}${total ? ' de ' + total : ''}</span><div class="t">📚 ${esc(nx.title || 'Aula')}</div></div>
+        <div class="lesson"><div><span class="k">Lesson ${nx.n}${total ? ' de ' + total : ''}</span><div class="t">📚 ${esc(nx.title || 'Aula')}</div>${lessonDetails(nx)}</div>
           <a class="btn-join" href="${WHEREBY}" target="_blank" rel="noopener noreferrer">Entrar na aula <span aria-hidden="true">↗</span></a></div>
       </section>`;
     } else {
@@ -243,9 +272,12 @@ const PortalView = (() => {
           <p>${had ? 'Quando novas aulas forem marcadas, elas aparecem aqui automaticamente.' : 'Assim que as datas forem definidas, sua próxima aula aparece aqui.'}</p></div>
       </section>`;
     }
+    const prev = nx ? (data.lessons || []).filter(l => l.date && (String(l.date) < String(nx.date) || (l.date === nx.date && l.n < nx.n))).slice(-1)[0] : (data.lessons || []).filter(l => l.date).slice(-1)[0];
+    const hwText = prev ? homeworkOf(prev.content) : '';
+    const hw = hwText ? `<section class="card hw" aria-label="Homework"><h2>🏠 Homework</h2><div class="hw-body">${md(hwText)}</div><small>Da Lesson ${prev.n} · ${esc(prev.title || '')}</small></section>` : '';
     const nb = isHttps(data.notebookUrl)
       ? `<a class="card" href="${esc(data.notebookUrl)}" target="_blank" rel="noopener noreferrer"><h2>📓 Meu Student Notebook</h2><p>Seu espaço de estudo, anotações e materiais.</p><span class="go">Abrir Student Notebook →</span></a>`
-      : `<div class="card muted"><h2>📓 Meu Student Notebook</h2><p>Seu espaço de estudo, anotações e materiais.</p><span class="go">Disponível em breve</span></div>`;
+      : `<button class="card" type="button" data-go="cal"><h2>📓 Minhas aulas</h2><p>Objetivos, conteúdo, materiais e homework de cada aula.</p><span class="go">Ver minhas aulas →</span></button>`;
     const daily = isHttps(data.dailyUrl)
       ? `<a class="card daily" href="${esc(data.dailyUrl)}" target="_blank" rel="noopener noreferrer"><div class="txt"><h2>📱 EnglishHub Daily</h2><p>Pratique inglês entre uma aula e outra.</p></div><span class="pill">Abrir EnglishHub Daily →</span></a>`
       : `<div class="card daily muted"><div class="txt"><h2>📱 EnglishHub Daily</h2><p>Pratique inglês entre uma aula e outra.</p></div><span class="pill">Disponível em breve</span></div>`;
@@ -258,13 +290,14 @@ const PortalView = (() => {
       </header>
       ${next}
       <div class="res">
+        ${hw}
         <button class="card" type="button" data-go="cal"><h2>📅 Meu calendário</h2><p>Acompanhe suas aulas, feriados, recessos e o percurso do curso.</p><span class="go">Ver meu calendário →</span></button>
         ${nb}
         ${daily}
       </div>
       <div class="room"><div class="txt"><b>🎥 Sala de aula</b><span>Entre aqui no horário da sua aula.</span></div><a href="${WHEREBY}" target="_blank" rel="noopener noreferrer">Entrar na sala →</a></div>
       <p class="foot">EnglishHub with Marcela · Salve este link para voltar sempre que quiser.</p>`;
-    root.querySelector('[data-go=cal]').onclick = () => { calendar(root, data, opt); if (opt.onNav) opt.onNav('cal'); };
+    root.querySelectorAll('[data-go=cal]').forEach(b => b.onclick = () => { calendar(root, data, opt); if (opt.onNav) opt.onNav('cal'); });
   }
 
   function calendar(root, data, opt) {
@@ -320,7 +353,7 @@ const PortalView = (() => {
       ${loading ? '<div class="skel" aria-label="Carregando"></div>' : `<div class="state"><h1>${esc(title)}</h1><p>${esc(text)}</p></div>`}`;
   }
 
-  return { home, calendar, state, nextLesson, WHEREBY, esc };
+  return { home, calendar, state, nextLesson, homeworkOf, WHEREBY, esc };
 })();
 
 </script>
