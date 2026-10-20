@@ -250,6 +250,9 @@ const PortalView = (() => {
     return null;
   }
 
+  // Aulas extras da Central (fora do pacote) chegam com n > 1000 e extra = true.
+  const isExtraLesson = l => !!(l && l.extra && l.n > 1000);
+  const lessonLabel = l => isExtraLesson(l) ? 'Aula extra' : 'Lesson ' + l.n;
   function home(root, data, opt) {
     const now = opt.now ? opt.now() : new Date();
     const nx = nextLesson(data, now), total = data.totalLessons || (data.lessons || []).length;
@@ -261,7 +264,7 @@ const PortalView = (() => {
         <div class="next-top"><span class="eyebrow">Próxima aula</span>${nx.live ? '<span class="badge live">Acontecendo agora</span>' : nx.today ? '<span class="badge">Hoje</span>' : ''}</div>
         <div class="when"><span class="wd">${nx.today ? 'Hoje, ' + WD_FULL[wdOf(nx.date)].toLowerCase() : WD_FULL[wdOf(nx.date)]}</span>
           <span class="dt num">${pad(p.d)} de ${MONTHS[p.m - 1]}${nx.time ? ` · <span class="tm">${fmtTime(nx.time)}</span>` : ''}</span></div>
-        <div class="lesson"><div><span class="k">Lesson ${nx.n}${total ? ' de ' + total : ''}</span><div class="t">📚 ${esc(nx.title || 'Aula')}</div>${lessonDetails(nx)}</div>
+        <div class="lesson"><div><span class="k">${lessonLabel(nx)}${total && !isExtraLesson(nx) ? ' de ' + total : ''}</span><div class="t">📚 ${esc(nx.title || 'Aula')}</div>${lessonDetails(nx)}</div>
           <a class="btn-join" href="${WHEREBY}" target="_blank" rel="noopener noreferrer">Entrar na aula <span aria-hidden="true">↗</span></a></div>
       </section>`;
     } else {
@@ -274,7 +277,7 @@ const PortalView = (() => {
     }
     const prev = nx ? (data.lessons || []).filter(l => l.date && (String(l.date) < String(nx.date) || (l.date === nx.date && l.n < nx.n))).slice(-1)[0] : (data.lessons || []).filter(l => l.date).slice(-1)[0];
     const hwText = prev ? homeworkOf(prev.content) : '';
-    const hw = hwText ? `<section class="card hw" aria-label="Homework"><h2>🏠 Homework</h2><div class="hw-body">${md(hwText)}</div><small>Da Lesson ${prev.n} · ${esc(prev.title || '')}</small></section>` : '';
+    const hw = hwText ? `<section class="card hw" aria-label="Homework"><h2>🏠 Homework</h2><div class="hw-body">${md(hwText)}</div><small>Da ${lessonLabel(prev)} · ${esc(prev.title || '')}</small></section>` : '';
     const nb = isHttps(data.notebookUrl)
       ? `<a class="card" href="${esc(data.notebookUrl)}" target="_blank" rel="noopener noreferrer"><h2>📓 Meu Student Notebook</h2><p>Seu espaço de estudo, anotações e materiais.</p><span class="go">Abrir Student Notebook →</span></a>`
       : `<button class="card" type="button" data-go="cal"><h2>📓 Minhas aulas</h2><p>Objetivos, conteúdo, materiais e homework de cada aula.</p><span class="go">Ver minhas aulas →</span></button>`;
@@ -312,7 +315,7 @@ const PortalView = (() => {
     }
     const nx = nextLesson(data, now), today = keyOf(now);
     const total = data.totalLessons || lessons.length;
-    const done = lessons.filter(l => nx ? String(l.date) < String(nx.date) || (l.date === nx.date && l.n < nx.n) : true).length;
+    const done = lessons.filter(l => !isExtraLesson(l)).filter(l => nx ? String(l.date) < String(nx.date) || (l.date === nx.date && l.n < nx.n) : true).length;
     const last = lessons[lessons.length - 1];
     const items = [
       ...lessons.map(l => ({ date: String(l.date), kind: 'l', l })),
@@ -325,7 +328,7 @@ const PortalView = (() => {
       const d = `<div class="d"><b>${pad(p.d)}</b><small>${WD3[wdOf(it.date)]}</small></div>`;
       if (it.kind === 'l') {
         const l = it.l, isNext = nx && nx.n === l.n && nx.date === l.date, past = !isNext && (nx ? it.date < String(nx.date) : true);
-        html += `<div class="row${isNext ? ' next-row' : past ? ' past' : ''}">${d}<div class="n"><b>${esc(l.title || 'Aula')}</b><small>Lesson ${l.n}${l.time ? ' · ' + fmtTime(l.time) : ''}</small>${lessonDetails(l)}</div><span class="s">${isNext ? (it.date === today ? 'HOJE' : 'PRÓXIMA') : past ? '✓ Anterior' : ''}</span></div>`;
+        html += `<div class="row${isNext ? ' next-row' : past ? ' past' : ''}">${d}<div class="n"><b>${esc(l.title || 'Aula')}</b><small>${lessonLabel(l)}${l.time ? ' · ' + fmtTime(l.time) : ''}</small>${lessonDetails(l)}</div><span class="s">${isNext ? (it.date === today ? 'HOJE' : 'PRÓXIMA') : past ? '✓ Anterior' : ''}</span></div>`;
       } else {
         const e = it.e, ep = parseKey(e.end || e.start), multi = e.end && e.end !== e.start;
         const sub = e.kind === 'feriado' ? 'Feriado · sem aula' : e.kind === 'recesso' ? (multi ? `Recesso até ${pad(ep.d)}/${pad(ep.m)}` : 'Recesso') : 'Sem aula';
