@@ -133,6 +133,7 @@ button.card{border:0;text-align:left;font:inherit;width:100%;color:var(--ink)}
 .next .lesson-more summary{color:var(--time)}
 .next .lesson-more-body{color:var(--blue-ink)}
 .next .lesson-more-body a{color:var(--time)}
+.wide{grid-column:1/-1}
 .hw{grid-column:1/-1;border-left:5px solid var(--coral)}
 .hw .hw-body{color:var(--ink-2);font-size:14.5px;overflow-wrap:anywhere}
 .hw .hw-body a{color:var(--blue);font-weight:600}
@@ -177,7 +178,7 @@ button.card{border:0;text-align:left;font:inherit;width:100%;color:var(--ink)}
 <script>
 /* =====================================================================
    PortalView — desenha o portal do aluno a partir dos dados de get_portal:
-   { name, course, notebookUrl, dailyUrl, totalLessons,
+   { name, course, notebookUrl, dailyUrl, materialsUrl, totalLessons,
      lessons:[{n,date,time,duration,title,extra,content,resources}],
      events:[{kind:'feriado'|'recesso'|'sem_aula', start, end, label}] }
    Usado igual no site (GitHub Pages) e na pré-visualização da professora.
@@ -281,6 +282,9 @@ const PortalView = (() => {
     const nb = isHttps(data.notebookUrl)
       ? `<a class="card" href="${esc(data.notebookUrl)}" target="_blank" rel="noopener noreferrer"><h2>📓 Meu Student Notebook</h2><p>Seu espaço de estudo, anotações e materiais.</p><span class="go">Abrir Student Notebook →</span></a>`
       : `<button class="card" type="button" data-go="cal"><h2>📓 Minhas aulas</h2><p>Objetivos, conteúdo, materiais e homework de cada aula.</p><span class="go">Ver minhas aulas →</span></button>`;
+    const mats = isHttps(data.materialsUrl)
+      ? `<a class="card wide" href="${esc(data.materialsUrl)}" target="_blank" rel="noopener noreferrer"><h2>📁 Materiais das aulas</h2><p>Slides, PDFs e áudios das suas aulas, numa pasta do Google Drive.</p><span class="go">Abrir materiais →</span></a>`
+      : '';
     const daily = isHttps(data.dailyUrl)
       ? `<a class="card daily" href="${esc(data.dailyUrl)}" target="_blank" rel="noopener noreferrer"><div class="txt"><h2>📱 EnglishHub Daily</h2><p>Pratique inglês entre uma aula e outra.</p></div><span class="pill">Abrir EnglishHub Daily →</span></a>`
       : `<div class="card daily muted"><div class="txt"><h2>📱 EnglishHub Daily</h2><p>Pratique inglês entre uma aula e outra.</p></div><span class="pill">Disponível em breve</span></div>`;
@@ -296,6 +300,7 @@ const PortalView = (() => {
         ${hw}
         <button class="card" type="button" data-go="cal"><h2>📅 Meu calendário</h2><p>Acompanhe suas aulas, feriados, recessos e o percurso do curso.</p><span class="go">Ver meu calendário →</span></button>
         ${nb}
+        ${mats}
         ${daily}
       </div>
       <div class="room"><div class="txt"><b>🎥 Sala de aula</b><span>Entre aqui no horário da sua aula.</span></div><a href="${WHEREBY}" target="_blank" rel="noopener noreferrer">Entrar na sala →</a></div>
